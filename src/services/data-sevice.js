@@ -1,5 +1,5 @@
 export default class DataApp {
-  _apiBase = "http://www.json-generator.com/api/json/get/cfSynsxYfC?indent=2";
+  _apiBase = "//www.json-generator.com/api/json/get/cfSynsxYfC?indent=2";
 
   async getResource() {
     // Ждём, пока результат промиса не будет доступен. Когда он станет доступен, мы запишем его в res.
