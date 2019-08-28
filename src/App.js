@@ -1,26 +1,81 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { Component } from "react";
+import { BrowserRouter as Router, Route } from "react-router-dom";
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+import { Global, css } from "@emotion/core";
+
+import DataApp from "./services/data-sevice";
+import { AppProvider } from "./services/context-app";
+import CatalogPage from "./pages/catalog-page";
+import ProductPage from "./pages/product-page";
+
+export default class App extends Component {
+  dataApp = new DataApp();
+
+  state = {
+    products: [],
+    productObj: {}
+  };
+
+  getIndexProduct = idx => {
+    this.setState(({ products }) => {
+      return {productObj: products[idx]};
+    });
+  };
+
+  componentDidMount() {
+    this.upadetData();
+  }
+
+  upadetData() {
+    this.dataApp.getProduct().then(product => {
+      this.setState({ products: [...product] });
+    });
+  }
+
+  render() {
+    const { products, productObj } = this.state;
+
+    return (
+      <Router>
+        <AppProvider value={[products, productObj, this.getIndexProduct]}>
+          <Global
+            styles={css`
+            body {
+              font-family: "Roboto", sans-serif;
+                & > div {
+                  overflow: hidden;
+                }
+              }
+
+              body,
+              h1,
+              h2,
+              h3,
+              ul,
+              li,
+              p {
+                margin: 0;
+                padding: 0;
+              }
+
+              li {
+                list-style-type: none;
+              }
+
+              * {
+                box-sizing: border-box;
+              }
+
+              a {
+                text-decoration: none;
+                color: inherit;
+              }
+            `}
+          />
+          <Route exact path="/" component={CatalogPage} />
+          <Route path="/product" component={ProductPage} />
+        </AppProvider>
+      </Router>
+    );
+  }
 }
-
-export default App;
